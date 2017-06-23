@@ -80,7 +80,7 @@ sess.run(init)
 #随机选取100个图像数据，进行随机训练
 li = []
 for i in range(1000):
-    batch_xs,batch_ys = mnist.train.next_batch(100)
+    batch_xs,batch_ys = mnist.train.next_batch(10)
     sess.run(train_step,feed_dict={x:batch_xs,y_:batch_ys})
     li.append(sess.run(accuracy_ing,feed_dict={x:mnist.test.images,y_:mnist.test.labels}))
 '''
@@ -95,10 +95,10 @@ print(sess.run(accuracy,feed_dict={x:mnist.test.images,y_:mnist.test.labels}))
 #制作出一个图表
 plt.figure(figsize=(13,7)) #创建绘图对象 
 plt.plot(li,"b--",label='Original data')
-plt.title("Oh my god")
+plt.title("ten_size_of_batch")
 plt.ylabel("accuracy")
 #
-plt.savefig("images/softmax_cost.png")
+plt.savefig("images/ten_size_of_batch.png")
 plt.show()
 plt.close()
 '''
