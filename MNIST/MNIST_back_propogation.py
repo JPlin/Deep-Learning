@@ -26,16 +26,16 @@ eta = tf.constant(0.5)
 
 def get_weight_variable(shape,regularizer=None):
     #得到权值变量，封装变量的初始化过程
-    #weights = tf.Variable(tf.truncated_normal(shape,stddev=1))
-    weights = tf.Variable(tf.zeros(shape))
+    weights = tf.Variable(tf.truncated_normal(shape,stddev=1))
+    #weights = tf.Variable(tf.zeros(shape))
     if regularizer != None:
         tf.add_to_collection('losses',regularizer(weights))
     return weights
 
 def get_biases_variable(shape , regularizer=None):
     #得到偏置变量，封装变量的初始化过程
-    #biases = tf.Variable(tf.truncated_normal(shape,stddev=1)) 
-    biases = tf.Variable(tf.zeros(shape))
+    biases = tf.Variable(tf.truncated_normal(shape,stddev=1)) 
+    #biases = tf.Variable(tf.zeros(shape))
     if regularizer != None:
         tf.add_to_collection('losses',regularizer(biases))
     return biases
