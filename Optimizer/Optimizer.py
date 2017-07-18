@@ -79,19 +79,7 @@ with tf.name_scope("Convolution_2"):
     b_conv2 = get_biases_variable([64])
     
     h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2)
-    h_pool2 = max_pool_2x2(h_conv2)
-   
-#********************第三层卷积*******************
-'''
-with tf.name_scope("Convolution_3"):
-    #patch 大小是5x5
-    #输入通道是32，输出通道是64
-    W_conv3 = get_weight_variable([5, 5, 64, 64])
-    b_conv3 = get_biases_variable([64])
-    
-    h_conv3 = tf.nn.relu(conv2d(h_pool2, W_conv3) + b_conv3)
-    h_pool3 = max_pool_2x2(h_conv3)
-'''
+    h_pool2 = max_pool_2x2(h_conv2)   
 #********************全链接层*********************
 
 with tf.name_scope("Full_con"):
@@ -123,8 +111,16 @@ with tf.name_scope("Output"):
 #********************开始训练*******************
 cross_entropy = -tf.reduce_sum(y_*tf.log(y_conv))
 tf.summary.scalar('loss', cross_entropy) 
+#使用梯度下降优化算法
+#step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cross_entropy)
+#使用momentum 优化算法，第二个参数是学习初始动量
+#step = tf.train.MomentumOptimizer(LEARNING_RATE,0.9).minimize(cross_entropy)
+#使用nesterov momentum 优化算法，第二个参数是学习初始动量
+#step = tf.train.MomentumOptimizer(LEARNING_RATE,0.9,use_nesterov=True).minimize(cross_entropy)
+#使用nesterov momentum 优化算法，第二个参数是学习初始动量
+step = tf.train.RMSPropOptimizer(learning_rate=LEARNING_RATE, decay=0.95).minimize(cross_entropy)
 #使用更加复杂的Adam 梯度下降算法
-step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
+#step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
 correct_prediction = tf.equal(tf.argmax(y_conv,1), tf.argmax(y_,1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
 tf.summary.scalar('accuracy', accuracy) 
@@ -133,7 +129,7 @@ tf.summary.scalar('accuracy', accuracy)
 sess = tf.InteractiveSession()
 
 merged = tf.summary.merge_all()
-writer = tf.summary.FileWriter('log', sess.graph)
+writer = tf.summary.FileWriter('log/RMSProp_Full_Batch', sess.graph)
 
 sess.run(tf.global_variables_initializer())
 for i in range(TRAIN_TIMES):
